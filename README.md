@@ -1,22 +1,22 @@
-# meituan-vue
+项目正在开发中...
 
-> My excellent Nuxt.js project
+Vue+nuxt+koa2+mongodb实现SSR仿美团官网
 
-## Build Setup
+开始：npm run dev
 
-``` bash
-# install dependencies
-$ npm run install
+目录结构：
 
-# serve with hot reload at localhost:3000
-$ npm run dev
+assets: 放置样式（scss与img）
 
-# build for production and launch server
-$ npm run build
-$ npm run start
+components: 组件化模板
 
-# generate static project
-$ npm run generate
-```
+layouts: 默认引用的组件
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+pages: 实现的页面
+
+plugins: element-UI
+
+server: 后台服务器接口
+
+store: 类似vuex的状态管理系统
+
