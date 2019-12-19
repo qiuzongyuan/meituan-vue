@@ -2,7 +2,7 @@ import Router from 'koa-router';
 import Cart from '../db/models/cart'
 import md5 from 'crypto-js/md5'
 
-let router = new Router({prefix: '/cart'})
+const router = new Router({prefix: '/cart'})
 
 router.post('/create', async ctx => {
   if (!ctx.isAuthenticated()) {
@@ -11,11 +11,18 @@ router.post('/create', async ctx => {
       msg: 'please login'
     }
   } else {
-    let time = Date()
-    let cartNo = md5(Math.random() * 1000 + time).toString()
-    let { params: { id, detail } } = ctx.request.body
-    let cart = new Cart({id, cartNo, time, user: ctx.session.passport.user, detail})
-    let result = await cart.save()
+    const time = Date()
+    const cartNo = md5(Math.random() * 1000 + time).toString()
+    const { params: { id, detail } } = ctx.request.body
+    const { username } = ctx.session.passport.user
+    const cart = new Cart({
+      id,
+      cartNo,
+      time,
+      user: username,
+      detail
+    })
+    const result = await cart.save()
     if (result) {
       ctx.body = {
         code: 0,
@@ -32,7 +39,7 @@ router.post('/create', async ctx => {
 })
 
 router.post('/getCart', async ctx => {
-  let {id} = ctx.request.body
+  const {id} = ctx.request.body
   try {
     let result = await Cart.findOne({cartNo: id})
     ctx.body = {

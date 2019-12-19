@@ -1,5 +1,3 @@
-项目正在开发中...
-
 Vue+nuxt+koa2+mongodb实现SSR仿美团官网
 
 开始：npm run dev
@@ -19,4 +17,6 @@ plugins: element-UI
 server: 后台服务器接口
 
 store: 类似vuex的状态管理系统
+
+dbs:mongodb数据库文件
 

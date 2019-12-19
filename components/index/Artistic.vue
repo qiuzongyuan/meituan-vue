@@ -8,8 +8,8 @@
       <dd :class="{active:kind==='part'}" kind="part" keyword="美食">
         约会聚餐
       </dd>
-      <dd :class="{active:kind==='spa'}" kind="spa" keyword="SPA">
-        SPA
+      <dd :class="{active:kind==='spa'}" kind="spa" keyword="spa">
+        丽人SPA
       </dd>
       <dd :class="{active:kind==='movie'}" kind="movie" keyword="电影">
         电影演出
@@ -27,7 +27,9 @@
               {{ item.title }}
             </li>
             <li class="pos">
-              <span>{{ item.pos }}</span>
+              <span>
+                {{ item.pos }}
+              </span>
             </li>
             <li class="price">
               ￥<em>{{ item.price }}</em>
@@ -41,9 +43,11 @@
 </template>
 <script>
 export default {
-  data: () => {
+  data () {
     return {
       kind: 'all',
+      kinds: ['all', 'part', 'spa', 'movie', 'travel'],
+      keywords: ['景点', '美食', 'SPA', '电影', '旅游'],
       list: {
         all: [],
         part: [],
@@ -59,64 +63,35 @@ export default {
     }
   },
   async mounted () {
-    const city = this.$store.state.geo.position.city
-    const { status, data: { count, pois } } = await this.$axios.get('/search/resultsByKeywords', {
-      params: {
-        city,
-        keyword: '景点'
-      }
-    })
-    if (status === 200 && count > 0) {
-      const result = pois.filter(item => item.photos.length)
-        .map((item) => {
-          if (item.biz_ext.cost.length === 0) {
-            item.biz_ext.cost = 0
-          }
+    const city = this.$store.state.geo.position
+    console.log(city)
+    for (let i = 0; i < this.keywords.length; i++) {
+      const { status, data: { count, pois } } = await this.$axios.get('/search/resultsByKeywords', {
+        params: {
+          city,
+          keyword: this.keywords[i]
+        }
+      })
+      if (status === 200 && count > 0) {
+        const result = pois.filter(item => item.photos.length).map((item) => {
           return {
             title: item.name,
             pos: item.type.split(';')[0],
-            price: item.biz_ext.cost || '0',
+            price: item.biz_ext.cost || '暂无',
             img: item.photos[0].url,
             url: '//abc.com'
           }
         })
-      this.List[this.kind] = result.slice(0, 9)
-    } else {
-      this.List[this.kind] = []
+        this.list[this.kinds[i]] = result.slice(0, 9)
+      }
     }
   },
   methods: {
-    async over (e) {
+    over (e) {
       const dom = e.target
       const tag = dom.tagName.toLowerCase()
       if (tag === 'dd') {
         this.kind = dom.getAttribute('kind')
-        const city = this.$store.state.geo.position.city
-        const keyword = dom.getAttribute('keyword')
-        const { status, data: { count, pois } } = await this.$axios.get('/search/resultsByKeywords', {
-          params: {
-            city,
-            keyword
-          }
-        })
-        if (status === 200 && count > 0) {
-          const result = pois.filter(item => item.photos.length)
-            .map((item) => {
-              if (item.biz_ext.cost.length === 0) {
-                item.biz_ext.cost = 0
-              }
-              return {
-                title: item.name,
-                pos: item.type.split(';')[0],
-                price: item.biz_ext.cost || '0',
-                img: item.photos[0].url,
-                url: '//abc.com'
-              }
-            })
-          this.List[this.kind] = result.slice(0, 9)
-        } else {
-          this.List[this.kind] = []
-        }
       }
     }
   }

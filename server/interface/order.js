@@ -3,31 +3,32 @@ import Cart from '../db/models/cart'
 import Order from '../db/models/order'
 import md5 from 'crypto-js/md5'
 
-let router = new Router({prefix: '/order'})
+const router = new Router({prefix: '/order'})
 
 router.post('/createOrder', async ctx => {
-  let {id, price, count} = ctx.request.body
-  let time = Date()
-  let orderID = md5(Math.random() * 1000 + time).toString()
+  const {id, price, count} = ctx.request.body
+  const time = Date()
+  const orderID = md5(Math.random() * 1000 + time).toString()
   if (!ctx.isAuthenticated()) {
     ctx.body = {
       code: -1,
       msg: 'please login'
     }
   } else {
-    let findCart = await Cart.findOne({cartNo: id})
+    const { username } = ctx.session.passport.user
+    const findCart = await Cart.findOne({cartNo: id})
     let order = new Order({
       id: orderID,
       count,
       total: price * count,
       time,
-      user: ctx.session.passport.user,
+      user: username,
       name: findCart.detail[0].name,
       imgs: findCart.detail[0].imgs,
       status: 0
     })
     try {
-      let result = await order.save();
+      const result = await order.save();
       if (result) {
         await findCart.remove()
         ctx.body = {
@@ -56,7 +57,7 @@ router.post('/getOrders', async ctx => {
     }
   } else {
     try {
-      let result = await Order.find()
+      const result = await Order.find({user: ctx.session.passport.user.username})
       if (result) {
         ctx.body = {
           code: 0,
