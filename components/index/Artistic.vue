@@ -60,7 +60,7 @@ export default {
   },
   async mounted () {
     const city = this.$store.state.geo.position.city
-    const { status, data: { count, pois } } = await this.$axios.get('http://cp-tools.cn/search/resultsByKeywords', {
+    const { status, data: { count, pois } } = await this.$axios.get('/search/resultsByKeywords', {
       params: {
         city,
         keyword: '景点'
@@ -80,9 +80,9 @@ export default {
             url: '//abc.com'
           }
         })
-      this.list[this.kind] = result.slice(0, 9)
+      this.List[this.kind] = result.slice(0, 9)
     } else {
-      this.list[this.kind] = []
+      this.List[this.kind] = []
     }
   },
   methods: {
@@ -93,7 +93,7 @@ export default {
         this.kind = dom.getAttribute('kind')
         const city = this.$store.state.geo.position.city
         const keyword = dom.getAttribute('keyword')
-        const { status, data: { count, pois } } = await this.$axios.get('http://cp-tools.cn/search/resultsByKeywords', {
+        const { status, data: { count, pois } } = await this.$axios.get('/search/resultsByKeywords', {
           params: {
             city,
             keyword
@@ -113,25 +113,12 @@ export default {
                 url: '//abc.com'
               }
             })
-          this.list[this.kind] = result.slice(0, 9)
+          this.List[this.kind] = result.slice(0, 9)
         } else {
-          this.list[this.kind] = []
+          this.List[this.kind] = []
         }
       }
     }
-  //   async show () {
-  //     console.log(this.kind)
-  //     console.log(this.$store.state.geo.position.city)
-  //     const { status, data } = await this.$axios.get(`/search/resultsByKeywords`, {
-  //       params: {
-  //         city: this.$store.state.geo.position.city,
-  //         keyword: '景点'
-  //       }
-  //     })
-  //     if (status === 200) {
-  //       console.log(data)
-  //     }
-  //   }
   }
 }
 </script>

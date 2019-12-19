@@ -6,8 +6,8 @@
     <el-select v-model="pvalue" placeholder="省份">
       <el-option v-for="item in province" :key="item.value" :label="item.label" :value="item.value" />
     </el-select>
-    <el-select v-model="cvalue" :disabled="!city.length" placeholder="城市">
-      <el-option v-for="item in city" :key="item.value" :label="item.label" :value="item.value" />
+    <el-select v-model="cvalue" :disabled="!city.length" placeholder="城市" class="padding-right" @change="to">
+      <el-option v-for="item in city" :key="item.value" :label="item.label" :value="item.label" />
     </el-select>
     直接搜索：
     <el-autocomplete
@@ -73,7 +73,16 @@ export default {
       }
     },
     handleSelect (item) {
-      console.log(item.value)
+      this.$store.commit('geo/setPosition', { city: item.value })
+      location.href = '/'
+    },
+    async to (item) {
+      if (item === '市辖区') {
+        const { status, data: { city } } = await this.$axios.get(`/geo/province/${this.pvalue}`)
+        item = status === 200 ? city[0].province : ''
+      }
+      this.$store.commit('geo/setPosition', { city: item })
+      location.href = '/'
     }
   }
 }

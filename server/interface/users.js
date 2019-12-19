@@ -120,7 +120,7 @@ router.post('/verify', async (ctx) => {
   let mailOptions = {
     from: `"认证邮件" <${emailCongif.smtp.user}>`,
     to: ko.email,
-    subject: '高仿美团网注册码',
+    subject: '仿美团网注册码',
     html: `您的邀请码是${ko.code}`
   }
   await transporter.sendMail(mailOptions, (error, info) => {

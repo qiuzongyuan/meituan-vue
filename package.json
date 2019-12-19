@@ -23,6 +23,7 @@
     "element-ui": "^2.4.11",
     "eslint": "^5.0.0",
     "eslint-loader": "^3.0.2",
+    "js-cookie": "^2.2.1",
     "js-pinyin": "^0.1.9",
     "koa": "^2.6.2",
     "koa-bodyparser": "^4.2.1",
@@ -38,7 +39,8 @@
     "nuxt": "^2.0.0",
     "passport-local": "^1.0.0",
     "sass": "^1.23.7",
-    "sass-loader": "^8.0.0"
+    "sass-loader": "^8.0.0",
+    "vuex-persistedstate": "^2.7.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^1.0.1",

@@ -6,24 +6,35 @@
       </el-col>
       <el-col :span="15" class="center">
         <div class="wrapper">
-          <el-input v-model="search" placeholder="搜索商家或地点" @focus="focus" @blur="blur" @input="textInput" />
-          <button class="el-button el-button--primary">
+          <el-input
+            v-model="search"
+            placeholder="搜索商家或地点"
+            @focus="focus"
+            @blur="blur"
+            @input="textInput"
+            @keyup.enter.native="to"
+          />
+          <button class="el-button el-button--primary" @click="to">
             <i class="el-icon-search" />
           </button>
           <dl v-if="isHotPlace" class="hotPlace">
             <dt>热门搜索</dt>
             <dd v-for="(item,index) in hotPlace.slice(0, 4)" :key="index">
-              {{ item.name }}
+              <a :href="'/products?keyword='+item.name">
+                {{ item.name }}
+              </a>
             </dd>
           </dl>
           <dl v-if="isSearchList" class="searchList">
             <dd v-for="(item,index) in searchList" :key="index">
-              {{ item.name }}
+              <a :href="'/products?keyword='+item.name">
+                {{ item.name }}
+              </a>
             </dd>
           </dl>
         </div>
         <p class="suggest">
-          <a v-for="(item,index) in hotPlace.slice(0, 5)" :key="index" herf="#">
+          <a v-for="(item,index) in hotPlace.slice(0, 5)" :key="index" :href="'/products?keyword='+item.name">
             {{ item.name }}
           </a>
         </p>
@@ -41,6 +52,11 @@
           <li>
             <nuxt-link to="/" class="takeout">
               美团酒店
+            </nuxt-link>
+          </li>
+          <li>
+            <nuxt-link to="/" class="takeout">
+              民宿／公寓
             </nuxt-link>
           </li>
           <li>
@@ -78,13 +94,22 @@
 
 <script>
 export default {
+  async asyncData (ctx) {
+    const { status: status3, data: { result } } = await ctx.$axios.get('/search/hotPlace', {
+      params: {
+        city: ctx.store.state.geo.position.replace('市', '')
+      }
+    })
+    ctx.hotPlace = result
+    ctx.store.commit('home/setHotPlace', status3 === 200 ? result : [])
+  },
   data () {
     return {
       isFocus: false,
       search: '',
       hotPlace: this.$store.state.home.hotPlace,
       searchList: [],
-      city: this.$store.state.geo.position.city
+      city: this.$store.state.geo.position
     }
   },
   computed: {
@@ -121,6 +146,9 @@ export default {
       } else {
         this.searchList = []
       }
+    },
+    to () {
+      location.href = '/products?keyword=' + this.search
     }
   }
 }

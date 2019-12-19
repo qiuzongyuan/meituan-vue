@@ -13,7 +13,7 @@
         {{ item.title }}
       </dt>
       <dd>
-        <span v-for="c in item.city" :key="c">{{ c }}</span>
+        <span v-for="c in item.city" :key="c" @click="to(c)">{{ c }}</span>
       </dd>
     </dl>
   </div>
@@ -52,6 +52,12 @@ export default {
       }
       blocks.sort((a, b) => a.title.charCodeAt(0) - b.title.charCodeAt(0))
       this.block = blocks
+    }
+  },
+  methods: {
+    to (item) {
+      this.$store.commit('geo/setPosition', { city: item })
+      location.href = '/'
     }
   }
 }
